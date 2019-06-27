@@ -1,0 +1,1520 @@
+version: 43.0.9
+pageUuid: 85233df4-0229-11e9-8bc9-37fab4230805
+appTemplate:
+  isFetching: false
+  plugins:
+    ordered:
+      - getRetailerPreferences:
+          pluginTemplate:
+            id: getRetailerPreferences
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Retailer Preferences
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: '{{ !retailerMonikerDropdown.value }}'
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: true
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: >-
+                    /retailer-preferences/retailer/{{
+                    retailerMonikerDropdown.labels[retailerMonikerDropdown.values.indexOf(retailerMonikerDropdown.value)]
+                    }}
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: GET
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2018-12-10T20:30:30.525Z'
+            updatedAt: 2019-04-22T22:12:10.461Z
+      - button1:
+          pluginTemplate:
+            id: button1
+            type: widget
+            subtype: ButtonWidget
+            template:
+              ordered:
+                - color: ''
+                - internalUrlHashParams: ''
+                - exportFileType: csv
+                - buttonType: action
+                - exportTemplate: null
+                - url: ''
+                - newWindow: false
+                - value: Update
+                - exportQuery: ''
+                - action: updateRetailerPreferences
+                - internalUrlQuery: ''
+                - internalUrlPath: ''
+                - exportFileName: ''
+                - loading: ''
+                - disabled: |
+                    {{
+                      locale.value !== 'en_us'
+                      || getSettingsFromUser.value.retailerId === 0
+                      || getSettingsFromUser.value.hubMoniker === 'narvar'
+                      || !finalRules.value
+                      || !finalRules.value.channel_status
+                      || (getRetailerPreferences.data && !getRetailerPreferences.data.modified_date)
+                      || (getChannelList.data && getChannelList.data.channels && Boolean(getChannelList.data.channels && !getChannelList.data.channels.includes('sms')))
+                     || !retailerMonikerDropdown.value
+                    }}
+            position2:
+              position2:
+                row: 34
+                col: 7
+                height: 1
+                width: 2
+            createdAt: '2018-12-10T23:50:46.469Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - updateRetailerPreferences:
+          pluginTemplate:
+            id: updateRetailerPreferences
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Retailer Preferences
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: >-
+                    [{"key":"channel_configurations","value":"{{getRetailerPreferences.data
+                    &&
+                    getRetailerPreferences.data.channel_configurations}}"},{"key":"web_hook_config","value":"{{getRetailerPreferences.data
+                    &&
+                    getRetailerPreferences.data.web_hook_config}}"},{"key":"modified_date","value":"{{
+                    getRetailerPreferences.data &&
+                    getRetailerPreferences.data.modified_date}}"},{"key":"messages","value":"{{
+                    getRetailerPreferences.data &&
+                    getRetailerPreferences.data.messages}}"},{"key":"channel_status","value":"{{
+                    finalRules.value &&
+                    finalRules.value.channel_status}}"},{"key":"notifications_disabled","value":"{{
+                    finalRules.value && finalRules.value.notifications_disabled
+                    }}"},{"key":"tracking_retailer_only","value":"{{
+                    finalRules.value && finalRules.value.tracking_retailer_only
+                    }}"},{"key":"use_custom_rules_engine","value":"{{
+                    finalRules.value && finalRules.value.use_custom_rules_engine
+                    }}"},{"key":"custom_rules_engine_topic","value":"{{
+                    finalRules.value &&
+                    finalRules.value.custom_rules_engine_topic }}"}]
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: '{{ !getRetailerPreferences.data }}'
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: >-
+                    /retailer-preferences/retailer/{{
+                    retailerMonikerDropdown.labels[retailerMonikerDropdown.values.indexOf(retailerMonikerDropdown.value)]
+                    }}
+                - privateParams: []
+                - triggersOnSuccess:
+                    - getRetailerPreferences
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: PUT
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2018-12-10T23:54:35.511Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - locale:
+          pluginTemplate:
+            id: locale
+            type: widget
+            subtype: SelectWidget
+            template:
+              ordered:
+                - values: >-
+                    {{ parseLocalesFromSettings.value &&
+                    parseLocalesFromSettings.value.locales.map(locale =>
+                    locale.toLowerCase()) || [] }}
+                - allowOutOfRangeValues: false
+                - enableFuzzyMatching: true
+                - searchValue: ''
+                - displayValue: ''
+                - tooltipText: ''
+                - value: |-
+                    {{
+                      parseLocalesFromSettings.value && parseLocalesFromSettings.value.locales.includes('en_us') && 'en_us'
+                      || parseLocalesFromSettings.value && parseLocalesFromSettings.value.locales.map(locale => locale.toLowerCase())
+                      || []
+                    }}
+                - maxResults: 50
+                - placeholder: ''
+                - label: Locale
+                - labelMaxWidth: ''
+                - labelPlacedOnLeft: ''
+                - onSelect: ''
+                - disabled: '{{ !retailerMonikerDropdown.value }}'
+                - required: false
+                - labels: >-
+                    {{ parseLocalesFromSettings.value &&
+                    parseLocalesFromSettings.value.locales.map(locale =>
+                    locale.toLowerCase()) || [] }}
+            position2:
+              position2:
+                row: 3
+                col: 7
+                height: 1
+                width: 4
+            createdAt: '2018-12-11T00:27:00.331Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - notificationType:
+          pluginTemplate:
+            id: notificationType
+            type: widget
+            subtype: SelectWidget
+            template:
+              ordered:
+                - values: >-
+                    {{ getGlobalTypes.data &&
+                    getGlobalTypes.data.notification_types.map(({ code }) =>
+                    code) || [] }}
+                - allowOutOfRangeValues: false
+                - enableFuzzyMatching: true
+                - searchValue: ''
+                - displayValue: ''
+                - tooltipText: ''
+                - value: '{{ notificationType.values[0] }}'
+                - maxResults: 50
+                - placeholder: ''
+                - label: Notification Type
+                - labelMaxWidth: ''
+                - labelPlacedOnLeft: ''
+                - onSelect: ''
+                - disabled: '{{ !retailerMonikerDropdown.value }}'
+                - required: false
+                - labels: >-
+                    {{ getGlobalTypes.data &&
+                    getGlobalTypes.data.notification_types.map(({ desc }) =>
+                    desc) || [] }}
+            position2:
+              position2:
+                row: 1
+                col: 7
+                height: 1
+                width: 4
+            createdAt: '2018-12-11T00:28:36.498Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - updateOriginal:
+          pluginTemplate:
+            id: updateOriginal
+            type: datasource
+            subtype: JavascriptQuery
+            resourceName: JavascriptQuery
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: true
+                - query: >-
+                    // {{ notificationType.value }}
+
+                    // {{ channel.value }}
+
+                    // {{ locale.value }}
+
+                    // {{ retailerRules.value }}
+
+                    // {{ localizedRules.value }}
+
+                    // {{ contactNameInput.value }}
+
+                    // {{ fromContactInput.value }}
+
+                    // {{ replyToContactInput.value }}
+
+                    // {{ testContactInput.value }}
+
+                    // {{ channelOptions.toggles['0'].value }}
+
+                    // {{ channelOptions.toggles['1'].value }}
+
+                    // {{ retailerOptions.toggles['0'].value }}
+
+                    // {{ retailerOptions.toggles['1'].value }}
+
+                    // {{ useCustomRulesEngine.value }}
+
+                    // {{ customRulesEngineTopic.value }}
+
+
+                    if (!retailerMonikerDropdown.value) return undefined;
+
+                    const defaultPreference = {
+                      channel_configurations: {},
+                      web_hook_config: null,
+                      messages: [],
+                      use_custom_pulsar: false,
+                      pulsar_topic_name: null,
+                      channel_status: [],
+                    };
+
+                    const defaultNotificationChannel = {
+                      notification_type: notificationType.value,
+                      notification_channel_status: [],
+                    };
+
+                    const defaultNotificationChannelStatus = {
+                      channel: channel.value,
+                      enabled: false,
+                      priority: 0,
+                      opt_in_required: true,
+                      provider: null,
+                      options: {
+                        locale_to_contact_map: {},
+                      },
+                      enforce_sleep_hours: true
+                    };
+
+
+                    let finObj = retailerRules.value || defaultPreference;
+
+
+                    // Populate Retailer-level attributes:
+
+                    finObj.notifications_disabled =
+                    retailerOptions.toggles['0'].value;
+
+                    finObj.tracking_retailer_only =
+                    retailerOptions.toggles['1'].value;
+
+                    finObj.use_custom_rules_engine = useCustomRulesEngine.value;
+
+                    finObj.custom_rules_engine_topic =
+                    customRulesEngineTopic.value || null;
+
+                    let currentNode;
+
+                    if (notificationType.value) {
+                      if (!finObj.channel_status) finObj.channel_status = [];
+                      currentNode = finObj.channel_status.find(elem => elem.notification_type === notificationType.value);
+                      if (!currentNode) {
+                        finObj.channel_status.push(defaultNotificationChannel);
+                        currentNode = finObj.channel_status[finObj.channel_status.length - 1];
+                        currentNode.notification_type = notificationType.value;
+                      }
+                    }
+
+                    if (channel.value) {
+                      const prevNode = currentNode;
+                      if (!currentNode.notification_channel_status) currentNode.notification_channel_status = [];
+                      currentNode = currentNode.notification_channel_status.find(elem => elem.channel === channel.value);
+                      if (!currentNode) {
+                        prevNode.notification_channel_status.push(defaultNotificationChannelStatus);
+                        currentNode = prevNode.notification_channel_status[prevNode.notification_channel_status.length - 1];
+                        currentNode.channel = channel.value;
+                      }
+                      currentNode.enabled = channelOptions.toggles['0'].value;
+                      currentNode.opt_in_required = channelOptions.toggles['1'].value;
+                    }
+
+
+                    finObj.channel_status = finObj.channel_status.sort((a, b) =>
+                    {
+                      if (a.notification_type === 'order_confirmation') {
+                        return -1;
+                      } else if (b.notification_type === 'order_confirmation') {
+                        return 1;
+                      }
+                      return 0;
+                    });
+
+                    return finObj;
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - queryThrottleTime: '750'
+            createdAt: '2018-12-11T16:50:09.744Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - finalRules:
+          pluginTemplate:
+            id: finalRules
+            type: widget
+            subtype: JSONExplorerWidget
+            template:
+              ordered:
+                - value: '{{  updateOriginal.data  }}'
+                - html: false
+            position2:
+              position2:
+                row: 11
+                col: 7
+                height: 16
+                width: 5
+            createdAt: '2018-12-11T16:54:10.886Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - updatedRuleText:
+          pluginTemplate:
+            id: updatedRuleText
+            type: widget
+            subtype: TextWidget
+            template:
+              ordered:
+                - value: |
+                    Updated rules
+                - html: false
+                - scrollOverflow: false
+                - truncateOverflow: false
+            position2:
+              position2:
+                row: 33
+                col: 7
+                height: 1
+                width: 3
+            createdAt: '2018-12-11T17:02:51.123Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - channel:
+          pluginTemplate:
+            id: channel
+            type: widget
+            subtype: SelectWidget
+            template:
+              ordered:
+                - values: '[''sms'']'
+                - allowOutOfRangeValues: false
+                - enableFuzzyMatching: true
+                - searchValue: ''
+                - displayValue: ''
+                - tooltipText: ''
+                - value: '{{ channel.values[0] }}'
+                - maxResults: 50
+                - placeholder: ''
+                - label: Channel
+                - labelMaxWidth: ''
+                - labelPlacedOnLeft: ''
+                - onSelect: ''
+                - disabled: '{{ !retailerMonikerDropdown.value }}'
+                - required: false
+                - labels: '[''SMS'']'
+            position2:
+              position2:
+                row: 2
+                col: 7
+                height: 1
+                width: 4
+            createdAt: '2018-12-11T17:13:39.014Z'
+            updatedAt: 2019-04-22T22:12:10.462Z
+      - getLocales:
+          pluginTemplate:
+            id: getLocales
+            type: datasource
+            subtype: JavascriptQuery
+            resourceName: JavascriptQuery
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: true
+                - query: >-
+                    // {{ retailerRules.value }}
+
+                    const locales = {};
+
+                    if (!retailerRules.value) return [];
+
+                    retailerRules.value.channel_status.forEach(channelStatus =>
+                    {
+                      channelStatus.notification_channel_status.forEach(notificationChannelStatus => {
+                        Object.keys((notificationChannelStatus.options && notificationChannelStatus.options.locale_to_contact_map) || {}).forEach(key => {
+                          locales[key] = true;
+                        })
+                      })
+                    })
+
+                    return Object.keys(locales);
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - queryThrottleTime: '750'
+            createdAt: '2018-12-11T18:22:01.176Z'
+            updatedAt: 2019-04-22T22:12:10.463Z
+      - channelOptions:
+          pluginTemplate:
+            id: channelOptions
+            type: widget
+            subtype: ToggleListWidget
+            template:
+              ordered:
+                - toggles:
+                    - ordered:
+                        - label: ENABLED
+                        - description: ''
+                        - value: >-
+                            {{ getChannel.data && getChannel.data.enabled ||
+                            false }}
+                        - tags: ''
+                        - toggleOnQuery: ''
+                        - toggleOffQuery: ''
+                    - ordered:
+                        - label: Opt in required?
+                        - description: ''
+                        - value: >-
+                            {{ getChannel.data &&
+                            getChannel.data.opt_in_required || false }}
+                        - tags: ''
+                        - toggleOnQuery: ''
+                        - toggleOffQuery: ''
+            position2:
+              position2:
+                row: 4
+                col: 7
+                height: 6
+                width: 6
+            createdAt: '2018-12-12T16:10:15.880Z'
+            updatedAt: 2019-04-22T22:12:10.463Z
+      - getChannel:
+          pluginTemplate:
+            id: getChannel
+            type: datasource
+            subtype: JavascriptQuery
+            resourceName: JavascriptQuery
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: true
+                - query: |-
+                    // {{ notificationType.value }}
+                    // {{ channel.value }}
+                    // {{ retailerRules.value }}
+                    const defaultChannel = {
+                      channel: channel.value,
+                      enabled: false,
+                      priority: 0,
+                      opt_in_required: false,
+                      provider: null,
+                      enforce_sleep_hours: false
+                    }
+
+                    const defaultNotificationType = {
+                      notification_type: notificationType.value,
+                      notification_channel_status: [],
+                    }
+
+                    let currentNode = retailerRules.value || {};
+                    if (notificationType.value) {
+                      currentNode = getRetailerPreferences.data && getRetailerPreferences.data.channel_status && getRetailerPreferences.data.channel_status.find(elem => elem.notification_type === notificationType.value) || defaultNotificationType;
+                    } else {
+                      return {};
+                    }
+                    if (channel.value) {
+                      currentNode = currentNode.notification_channel_status.find(elem => elem.channel === channel.value) || defaultChannel;
+                    }
+
+                    return currentNode;
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - queryThrottleTime: '750'
+            createdAt: '2018-12-12T16:38:37.498Z'
+            updatedAt: 2019-04-22T22:12:10.463Z
+      - getRetailerList:
+          pluginTemplate:
+            id: getRetailerList
+            type: datasource
+            subtype: SqlQuery
+            resourceName: tracking-qa01-read
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - query: 'SELECT uri_moniker, dbio_rowid FROM retailer_info;'
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - dataArray: []
+                - triggersOnFailure: []
+                - databaseNameOverride: ''
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - timestamp: 0
+                - runWhenPageLoads: true
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - queryThrottleTime: '750'
+            createdAt: '2018-12-18T17:41:59.598Z'
+            updatedAt: 2019-04-22T22:12:10.463Z
+      - retailerMonikerDropdown:
+          pluginTemplate:
+            id: retailerMonikerDropdown
+            type: widget
+            subtype: SelectWidget
+            template:
+              ordered:
+                - values: '{{getRetailerList.data.dbio_rowid}}'
+                - allowOutOfRangeValues: false
+                - enableFuzzyMatching: true
+                - searchValue: ''
+                - displayValue: ''
+                - tooltipText: ''
+                - value: ''
+                - maxResults: 50
+                - placeholder: ''
+                - label: Retailer
+                - labelMaxWidth: ''
+                - labelPlacedOnLeft: ''
+                - onSelect: logIntoRetailerJS
+                - disabled: '{{ !getUserInfo.data }}'
+                - required: false
+                - labels: '{{getRetailerList.data.uri_moniker}}'
+            position2:
+              position2:
+                row: 2
+                col: 1
+                height: 1
+                width: 4
+            createdAt: '2018-12-19T23:37:43.311Z'
+            updatedAt: 2019-04-22T22:12:10.463Z
+      - getChannelList:
+          pluginTemplate:
+            id: getChannelList
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Retailer Preferences
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: true
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: >-
+                    /retailer-preferences/retailer/{{
+                    retailerMonikerDropdown.labels[retailerMonikerDropdown.values.indexOf(retailerMonikerDropdown.value)]
+                    }}/channels
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: true
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: GET
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-02T18:18:07.668Z'
+            updatedAt: 2019-04-22T22:12:10.463Z
+      - getGlobalTypes:
+          pluginTemplate:
+            id: getGlobalTypes
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Retailer Preferences
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: retailer-preferences/notification-types
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: true
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: GET
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-02T18:27:49.439Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - parseLocalesFromSettings:
+          pluginTemplate:
+            id: parseLocalesFromSettings
+            type: function
+            subtype: Function
+            template:
+              ordered:
+                - funcBody: >-
+                    var availableLocales =
+
+                    {{ getLocalesByRetailer.data &&
+                    getLocalesByRetailer.data.retailer_info_settings_json[0] &&
+                    getLocalesByRetailer.data.retailer_info_settings_json[0].locale
+                    &&
+                    getLocalesByRetailer.data.retailer_info_settings_json[0].locale.supported_locales
+                    }};
+
+
+                    return {
+
+                    locales:  availableLocales
+                      ? availableLocales.map(({ locale_code }) => (locale_code.toLowerCase()))
+                      : [],
+
+                    }
+                - value: ''
+            createdAt: '2019-01-02T18:30:46.655Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - getLocalesByRetailer:
+          pluginTemplate:
+            id: getLocalesByRetailer
+            type: datasource
+            subtype: SqlQuery
+            resourceName: tracking-qa01-read
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: '{{ !retailerMonikerDropdown.value }}'
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: true
+                - query: >-
+                    SELECT retailer_info_settings_json from retailer_info WHERE
+                    uri_moniker={{
+                    retailerMonikerDropdown.labels[retailerMonikerDropdown.values.indexOf(retailerMonikerDropdown.value)]
+                    }};
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - dataArray: []
+                - triggersOnFailure: []
+                - databaseNameOverride: ''
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-02T18:31:15.034Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - getLocalizedRule:
+          pluginTemplate:
+            id: getLocalizedRule
+            type: function
+            subtype: Function
+            template:
+              ordered:
+                - funcBody: |-
+                    const userLocale = {{ locale.value || null }};
+                    const userType = {{ notificationType.value || null}};
+                    const userChannel = {{ channel.value || null }};
+                    const defaultContact = {
+                      contact_name: null,
+                      from_contact: null,
+                      reply_to_contact: null,
+                      test_contact: null,
+                      url: null,
+                      http_method: null,
+                      lambda_name: null,
+                      request_headers: null,
+                      authorization: null,
+                      locale: userLocale,
+                      time_zone: null
+                    };
+                    const defaultNotificationType = {
+                      notification_type: userType,
+                      notification_channel_status: [],
+                    }
+                    const defaultChannel = {
+                      channel: userChannel,
+                      enabled: true,
+                      priority: 0,
+                      opt_in_required: false,
+                      provider: null,
+                      enforce_sleep_hours: false
+                    }
+
+                    let currentNode = {{ retailerRules.value }} || {};
+                    if (userType) {
+                      currentNode = {{ getRetailerPreferences.data && getRetailerPreferences.data.channel_status && getRetailerPreferences.data.channel_status.find(elem => elem.notification_type === notificationType.value) }} || defaultNotificationType;
+                    } else {
+                      return {};
+                    }
+                    if (userChannel) {
+                      currentNode = currentNode.notification_channel_status.find(elem => elem.channel === userChannel) || defaultChannel;
+                    }
+                    if (userLocale) {
+                      currentNode = currentNode.options && currentNode.options.locale_to_contact_map && currentNode.options.locale_to_contact_map[userLocale] || defaultContact;
+                    }
+
+                    return currentNode;
+                - value: ''
+            createdAt: '2019-01-02T19:12:06.577Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - originalRulesText:
+          pluginTemplate:
+            id: originalRulesText
+            type: widget
+            subtype: TextWidget
+            template:
+              ordered:
+                - value: Original Rules
+                - html: false
+                - scrollOverflow: false
+                - truncateOverflow: false
+            position2:
+              position2:
+                row: 33
+                col: 1
+                height: 1
+                width: 3
+            createdAt: '2019-01-02T23:05:34.938Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - retailerRules:
+          pluginTemplate:
+            id: retailerRules
+            type: widget
+            subtype: JSONExplorerWidget
+            template:
+              ordered:
+                - value: '{{ sortRetailerPreferences.value }}'
+                - html: false
+            position2:
+              position2:
+                row: 11
+                col: 1
+                height: 16
+                width: 6
+            createdAt: '2019-01-02T23:06:09.757Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - channelWarningText:
+          pluginTemplate:
+            id: channelWarningText
+            type: widget
+            subtype: TextWidget
+            template:
+              ordered:
+                - value: |-
+                    {{
+                      (!retailerMonikerDropdown.value && ' ')
+                      || (getChannelList.data && (!getChannelList.data.channels || !getChannelList.data.channels.includes('sms')) && 'Please go enable SMS before trying to save!')
+                      || (locale.value && locale.value !== 'en_us' && 'You may only update these settings here for en_us')
+                      || ' '
+                    }}
+                - html: false
+                - scrollOverflow: false
+                - truncateOverflow: false
+            position2:
+              position2:
+                row: 1
+                col: 1
+                height: 1
+                width: 3
+            createdAt: '2019-01-15T00:36:09.583Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - navigateToChannels:
+          pluginTemplate:
+            id: navigateToChannels
+            type: widget
+            subtype: ButtonWidget
+            template:
+              ordered:
+                - color: ''
+                - internalUrlHashParams: ''
+                - exportFileType: csv
+                - buttonType: internal-url
+                - exportTemplate: null
+                - url: ''
+                - newWindow: false
+                - value: Channels Page
+                - exportQuery: ''
+                - action: ''
+                - internalUrlQuery: ''
+                - internalUrlPath: 6fbbe2b2-09ff-11e9-881f-2fccf321bbdc
+                - exportFileName: ''
+                - loading: ''
+                - disabled: >-
+                    {{ !getChannelList.data ? false :
+                    Boolean(getChannelList.data.channels &&
+                    getChannelList.data.channels.includes('sms')) }}
+            position2:
+              position2:
+                row: 1
+                col: 4
+                height: 1
+                width: 2
+            createdAt: '2019-01-15T00:37:21.580Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - text4:
+          pluginTemplate:
+            id: text4
+            type: widget
+            subtype: TextWidget
+            template:
+              ordered:
+                - value: |-
+                    {{
+                      (getSettingsFromUser.value.retailerId !== 0 && !retailerMonikerDropdown.value && 'Please select a retailer')
+                      || (getSettingsFromUser.value.hubMoniker === 'narvar' && 'Please select a retailer')
+                      || (getSettingsFromUser.value.retailerId !== 0 && `Current Retailer: ${getSettingsFromUser.value.retailerInfo.display_name} (${getSettingsFromUser.value.retailerId})`)
+                      || 'Not logged in'
+                    }}
+                - html: false
+                - scrollOverflow: false
+                - truncateOverflow: false
+            position2:
+              position2:
+                col: 1
+                height: 1
+                width: 3
+            createdAt: '2019-01-15T01:40:12.880Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - button3:
+          pluginTemplate:
+            id: button3
+            type: widget
+            subtype: ButtonWidget
+            template:
+              ordered:
+                - color: ''
+                - internalUrlHashParams: ''
+                - exportFileType: csv
+                - buttonType: internal-url
+                - exportTemplate: null
+                - url: ''
+                - newWindow: false
+                - value: Log in to Hub
+                - exportQuery: ''
+                - action: ''
+                - internalUrlQuery: >-
+                    "[{\"key\":\"previousPage\",\"value\":\"Notifications/Preferences\"}]"
+                - internalUrlPath: 699ad3ea-02f0-11e9-bc93-6757508c9e06
+                - exportFileName: ''
+                - loading: ''
+                - disabled: '{{ getUserInfo.data }}'
+            position2:
+              position2:
+                col: 4
+                height: 1
+                width: 2
+            createdAt: '2019-01-15T01:40:23.079Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - getUserInfo:
+          pluginTemplate:
+            id: getUserInfo
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Hub
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: api/users/signedin
+                - privateParams: []
+                - triggersOnSuccess:
+                    - getRetailerSettings
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure:
+                    - getRetailerSettings
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '100'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: true
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: GET
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-15T01:40:37.635Z'
+            updatedAt: 2019-04-22T22:12:10.464Z
+      - getRetailerSettings:
+          pluginTemplate:
+            id: getRetailerSettings
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Hub
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: /api/designer/tracking?locale=en_US
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: true
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: GET
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-15T01:40:58.421Z'
+            updatedAt: 2019-04-22T22:12:10.466Z
+      - getSettingsFromUser:
+          pluginTemplate:
+            id: getSettingsFromUser
+            type: function
+            subtype: Function
+            template:
+              ordered:
+                - funcBody: >-
+                    const retailerId = {{getUserInfo.data &&
+                    getUserInfo.data.response.current_retailer_id || 0}};
+
+                    const retailerInfo = {{ getRetailerSettings.data &&
+                    JSON.parse(getRetailerSettings.data.retailer_settings) || {}
+                    }}
+
+
+                    const hubMoniker = {{ getUserInfo.data &&
+                    getUserInfo.data.response.retailerIdToRetailerInfo[getUserInfo.data.response.current_retailer_id].uri_moniker
+                    || false }};
+
+
+                    return {
+                      retailerInfo,
+                      retailerId,
+                      hubMoniker,
+                    };
+                - value: ''
+            createdAt: '2019-01-15T01:42:09.225Z'
+            updatedAt: 2019-04-22T22:12:10.466Z
+      - logIntoRetailerJS:
+          pluginTemplate:
+            id: logIntoRetailerJS
+            type: datasource
+            subtype: JavascriptQuery
+            resourceName: JavascriptQuery
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - query: >-
+                    if (!retailerMonikerDropdown.value) return;
+
+                    if (getSettingsFromUser.value &&
+                    getSettingsFromUser.value.hubMoniker &&
+                    getSettingsFromUser.value.hubMoniker !== 'narvar') {
+                      // Not Narvar retailer
+                      console.log('triggering switchback');
+                      switchback.trigger();
+                    } else {
+                      switchRetailer.trigger();
+                    }
+
+                    getRetailerPreferences.reset();
+
+                    updateOriginal.reset();
+                - privateParams: []
+                - triggersOnSuccess: []
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-15T01:46:12.044Z'
+            updatedAt: 2019-04-22T22:12:10.466Z
+      - switchback:
+          pluginTemplate:
+            id: switchback
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Hub
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: api/admin/user/switchback
+                - privateParams: []
+                - triggersOnSuccess:
+                    - switchRetailer
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: POST
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-15T01:46:38.064Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - switchRetailer:
+          pluginTemplate:
+            id: switchRetailer
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Hub
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: ''
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: >-
+                    /api/admin/user/customerSupportLogin?retailerId={{retailerMonikerDropdown.value}}
+                - privateParams: []
+                - triggersOnSuccess:
+                    - getUserInfo
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: POST
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-15T01:46:59.040Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - parseChannelList:
+          pluginTemplate:
+            id: parseChannelList
+            type: function
+            subtype: Function
+            template:
+              ordered:
+                - funcBody: |-
+                    const testChannels = {{ getChannelList.data }};
+                    if (testChannels && testChannels.channels) {
+                      return testChannels.channels;
+                    }
+                    return [];
+                - value: ''
+            createdAt: '2019-01-15T03:54:12.673Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - transformer5:
+          pluginTemplate:
+            id: transformer5
+            type: function
+            subtype: Function
+            template:
+              ordered:
+                - funcBody: return 5
+                - value: ''
+            createdAt: '2019-01-15T17:41:33.323Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - button4:
+          pluginTemplate:
+            id: button4
+            type: widget
+            subtype: ButtonWidget
+            template:
+              ordered:
+                - color: ''
+                - internalUrlHashParams: ''
+                - exportFileType: csv
+                - buttonType: action
+                - exportTemplate: null
+                - url: ''
+                - newWindow: false
+                - value: Insert
+                - exportQuery: ''
+                - action: insertRetailerPreferences
+                - internalUrlQuery: ''
+                - internalUrlPath: ''
+                - exportFileName: ''
+                - loading: ''
+                - disabled: |-
+                    {{
+                      locale.value !== 'en_us'
+                      || getSettingsFromUser.value.retailerId === 0
+                      || getSettingsFromUser.value.hubMoniker === 'narvar'
+                      || !getRetailerPreferences.data
+                      || getRetailerPreferences.data.modified_date
+                      || (getChannelList.data && (!getChannelList.data.channels || Boolean(!getChannelList.data.channels.includes('sms'))))
+                     || !retailerMonikerDropdown.value
+                    }}
+            position2:
+              position2:
+                row: 34
+                col: 9
+                height: 1
+                width: 2
+            createdAt: '2019-01-15T18:00:20.362Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - insertRetailerPreferences:
+          pluginTemplate:
+            id: insertRetailerPreferences
+            type: datasource
+            subtype: RESTQuery
+            resourceName: Retailer Preferences
+            template:
+              ordered:
+                - queryRefreshTime: ''
+                - paginationLimit: ''
+                - body: >-
+                    [{"key":"channel_configurations","value":"null"},{"key":"web_hook_config","value":"null"},{"key":"messages","value":"[]"},{"key":"channel_status","value":"{{
+                    finalRules.value &&
+                    finalRules.value.channel_status}}"},{"key":"notifications_disabled","value":"{{
+                    finalRules.value && finalRules.value.notifications_disabled
+                    }}"},{"key":"tracking_retailer_only","value":"{{
+                    finalRules.value && finalRules.value.tracking_retailer_only
+                    }}"},{"key":"use_custom_rules_engine","value":"{{
+                    finalRules.value && finalRules.value.use_custom_rules_engine
+                    }}"},{"key":"custom_rules_engine_topic","value":"{{
+                    finalRules.value &&
+                    finalRules.value.custom_rules_engine_topic }}"}]
+                - queryDisabledMessage: ''
+                - successMessage: ''
+                - queryDisabled: ''
+                - resourceNameOverride: ''
+                - runWhenModelUpdates: false
+                - paginationPaginationField: ''
+                - headers: ''
+                - paginationEnabled: false
+                - query: >-
+                    /retailer-preferences/retailer/{{
+                    retailerMonikerDropdown.labels[retailerMonikerDropdown.values.indexOf(retailerMonikerDropdown.value)]
+                    }}
+                - privateParams: []
+                - triggersOnSuccess:
+                    - getRetailerPreferences
+                - runWhenPageLoadsDelay: ''
+                - data: null
+                - showSuccessToaster: true
+                - cookies: ''
+                - triggersOnFailure: []
+                - confirmationMessage: null
+                - isFetching: false
+                - queryTriggerDelay: '0'
+                - watchedParams: []
+                - paginationDataField: ''
+                - timestamp: 0
+                - runWhenPageLoads: false
+                - queryTimeout: '10000'
+                - requireConfirmation: false
+                - type: POST
+                - bodyType: json
+                - queryThrottleTime: '750'
+            createdAt: '2019-01-15T18:00:52.813Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - channelWarningText2:
+          pluginTemplate:
+            id: channelWarningText2
+            type: widget
+            subtype: TextWidget
+            template:
+              ordered:
+                - value: |-
+                    {{
+                      (!retailerMonikerDropdown.value && ' ')
+                      || (getChannelList.data && (!getChannelList.data.channels || !getChannelList.data.channels.includes('sms')) && 'Please go enable SMS before trying to save!')
+                      || (locale.value && locale.value !== 'en_us' && 'You may only update these settings here for en_us')
+                      || ' '
+                    }}
+                - html: false
+                - scrollOverflow: false
+                - truncateOverflow: false
+            position2:
+              position2:
+                row: 33
+                col: 4
+                height: 1
+                width: 3
+            createdAt: '2019-01-18T18:47:41.548Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - sortRetailerPreferences:
+          pluginTemplate:
+            id: sortRetailerPreferences
+            type: function
+            subtype: Function
+            template:
+              ordered:
+                - funcBody: |-
+                    const pref = {{getRetailerPreferences.data}};
+
+                    const channelStatus = pref.channel_status.sort((a, b) => {
+                      if (a.notification_type === 'order_confirmation') {
+                        return -1;
+                      } else if (b.notification_type === 'order_confirmation') {
+                        return 1;
+                      }
+                      return 0;
+                    });
+                    pref.channel_status = channelStatus;
+
+                    return pref;
+                - value: ''
+            createdAt: '2019-02-12T00:11:00.798Z'
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - customRulesEngineTopic:
+          pluginTemplate:
+            id: customRulesEngineTopic
+            type: widget
+            subtype: TextInputWidget
+            template:
+              ordered:
+                - readonly: '{{ !useCustomRulesEngine.value }}'
+                - disabledKeyCodes: ''
+                - onBlur: ''
+                - docsSlug: textinput
+                - leftIconName: ''
+                - initialValue: >-
+                    {{ getRetailerPreferences.data.custom_rules_engine_topic ||
+                    null }}
+                - tooltipText: 'persistent://<qa01|st01|prod01>/<namespace>/<topic>'
+                - value: ''
+                - placeholder: ''
+                - label: CUSTOM RULES ENGINE TOPIC
+                - labelMaxWidth: ''
+                - labelPlacedOnLeft: ''
+                - onSubmit: ''
+                - type: text
+                - allowedRegex: .*
+                - required: false
+            position2:
+              position2:
+                row: 10
+                col: 1
+                height: 1
+                width: 6
+            createdAt: 2019-04-11T20:31:21.589Z
+            updatedAt: 2019-04-22T22:12:58.140Z
+      - retailerOptions:
+          pluginTemplate:
+            id: retailerOptions
+            type: widget
+            subtype: ToggleListWidget
+            template:
+              ordered:
+                - toggles:
+                    - ordered:
+                        - label: NOTIFICATIONS DISABLED
+                        - description: Top-level override for all notifications
+                        - value: >-
+                            {{ (getRetailerPreferences.data &&
+                            getRetailerPreferences.data.modified_date) ?
+                            getRetailerPreferences.data.notifications_disabled :
+                            true }}
+                        - tags: ''
+                        - toggleOnQuery: ''
+                        - toggleOffQuery: ''
+                        - disabled: ''
+                    - ordered:
+                        - label: TRACKING RETAILER ONLY
+                        - description: Retailer does not provide order data if set
+                        - tags: ''
+                        - value: >-
+                            {{
+                            getRetailerPreferences.data.tracking_retailer_only
+                            }}
+            position2:
+              position2:
+                row: 3
+                col: 1
+                height: 4
+                width: 6
+            createdAt: 2019-04-11T23:11:25.748Z
+            updatedAt: 2019-04-22T22:12:10.467Z
+      - useCustomRulesEngine:
+          pluginTemplate:
+            id: useCustomRulesEngine
+            type: widget
+            subtype: ToggleWidget
+            template:
+              ordered:
+                - label: USE CUSTOM RULES ENGINE
+                - labelMaxWidth: ''
+                - labelPlacedOnLeft: ''
+                - tooltipText: ''
+                - value: '{{ getRetailerPreferences.data.use_custom_rules_engine }}'
+                - toggleOnQuery: ''
+                - toggleOffQuery: ''
+                - disabled: ''
+            position2:
+              position2:
+                row: 9
+                col: 1
+                height: 1
+                width: 6
+            createdAt: 2019-04-12T17:50:34.216Z
+            updatedAt: 2019-04-22T22:12:10.467Z
+  height: 0
+  heightHeap:
+    array: []
+  createdAt: null
+  version: 2.38.60
+  responsiveLayoutDisabled: false
