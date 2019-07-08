@@ -7,7 +7,7 @@ const widgetMap = {};
 const funcMap = {};
 
 const permittedPluginFields = ['data', 'action', 'triggersOnSuccess', 'triggersOnFailure','value', 'values', 'labels', 'onSelect'];
-const permittedSourceFields = ['triggersOnSuccess', 'triggersOnFailure', 'query', 'body'];
+const permittedSourceFields = ['triggersOnSuccess', 'triggersOnFailure', 'query', 'body', 'changeset'];
 
 const parsePlugin = plugin => {
   const id = Object.keys(plugin)[0];
@@ -77,6 +77,15 @@ fs.readFile('./inputYaml.yaml', 'utf8', function(err, contents) {
       widgetSourceMapArr.forEach(thing => {
         if (sourceObj.query.includes(`${thing}`)) {
           stream.write(`${thing} -> ${key} [label="referenced in call" color="purple"]\n`);
+        }
+      })
+    } else if (sourceObj.subtype === 'RetoolTableQuery' && sourceObj.changeset) {
+      const replacedQuery = sourceObj.changeset && sourceObj.changeset.replace(/[\s\{\}(]*/g, '');
+      const replacedBody = sourceObj.body && sourceObj.body.replace(/[\s\{\}(]*/g, '');
+      widgetSourceMapArr.forEach(thing => {
+        if ((replacedQuery && replacedQuery.includes(`${thing}`))
+          || (replacedBody && replacedBody.includes(`${thing}`))) {
+          stream.write(`${thing} -> ${key} [label="used in query" color="cyan"]\n`);
         }
       })
     } else if ((sourceObj.query || sourceObj.body) && (sourceObj.id !== 'switchback' && key !== 'switchback')) {
