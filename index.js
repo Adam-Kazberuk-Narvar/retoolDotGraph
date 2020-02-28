@@ -6,7 +6,7 @@ const sourcesMap = {};
 const widgetMap = {};
 const funcMap = {};
 
-const permittedPluginFields = ['data', 'action', 'triggersOnSuccess', 'triggersOnFailure','value', 'values', 'labels', 'onSelect'];
+const permittedPluginFields = ['data', 'action', 'triggersOnSuccess', 'triggersOnFailure','value', 'values', 'labels', 'onSelect', 'model'];
 const permittedSourceFields = ['triggersOnSuccess', 'triggersOnFailure', 'query', 'body', 'changeset'];
 
 const parsePlugin = plugin => {
@@ -109,14 +109,15 @@ fs.readFile('./inputYaml.yaml', 'utf8', function(err, contents) {
       const inputName = widgetObj.data.replace(/[{}\s]*/g, '').split('.')[0];
       stream.write(`${inputName} -> ${key}\n`);
     }
-    if (widgetObj.value || widgetObj.values || widgetObj.labels) {
+    if (widgetObj.value || widgetObj.values || widgetObj.labels || widgetObj.model) {
       const replacedValue = widgetObj.value && widgetObj.value.replace(/[\s\{\}(]*/g, '');
       const replacedValues = widgetObj.values && widgetObj.values.replace(/[\s\{\}(]*/g, '');
       const replacedLabels = widgetObj.labels && widgetObj.labels.replace(/[\s\{\}(]*/g, '');
       widgetSourceMapArr.forEach(thing => {
         if ((replacedValues && replacedValues.includes(`${thing}`))
           || (replacedLabels && replacedLabels.includes(`${thing}`))
-          || (replacedValue && replacedValue.includes(thing))) {
+          || (replacedValue && replacedValue.includes(thing))
+          || (widgetObj.model && widgetObj.model.includes(thing))) {
           stream.write(`${thing} -> ${key} [label="referenced in" color="purple"]\n`);
         }
       })
